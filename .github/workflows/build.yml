@@ -1,35 +1,38 @@
-name: Build Halium Boot for Lava Blaze
+name: Build halium-boot
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-halium-boot:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y abootimg android-sdk-libsparse-utils mkbootimg unzip
+      - name: Set up tools
+        run: |
+          sudo apt update
+          sudo apt install -y abootimg android-sdk-libsparse-utils mkbootimg
 
-   - name: Build halium-boot.img
-      run: |
-        mkdir halium
-        cp boot.img halium/
-        cp vendor.img halium/
-        cp dtbo.img halium/
-        cp vbmeta.img halium/
-        cd halium
-        mkdir output
+      - name: Prepare halium directory
+        run: |
+          mkdir -p halium/output
 
-        # Dummy logic - replace with actual halium-boot build if source available
-        dd if=/dev/zero of=output/halium-boot-lava.img bs=1M count=32
+      - name: Download image files
+        run: |
+          wget -O halium/boot.img "https://drive.google.com/file/d/1AHb1yBO5nzoXDKzOOGje9n01GjsGvfpb/view?usp=drive_link"
+          wget -O halium/vendor.img "https://drive.google.com/file/d/18xOuo6Ez3agdVbY59Ilq5TLtJSaBbgoP/view?usp=drive_link"
+          wget -O halium/vbmeta.img "https://drive.google.com/file/d/1pVuEf35Rjcwz6jydP5-LMIH1OVwnBav9/view?usp=drive_link"
+          wget -O halium/dtbo.img "https://drive.google.com/file/d/1fxR-TRPX2LzzxjQ_nYoxSdQ2O0LemFmf/view?usp=drive_link"
 
-    - name: Upload boot image
-      uses: actions/upload-artifact@v3
-      with:
-        name: halium-boot-lava
-        path: halium/output/halium-boot-lava.img
+      - name: Dummy build halium-boot.img (replace with real logic)
+        run: |
+          dd if=/dev/zero of=halium/output/halium-boot-lava.img bs=1M count=32
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: halium-boot-lava
+          path: halium/output/halium-boot-lava.img
