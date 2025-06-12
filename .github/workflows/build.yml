@@ -15,7 +15,7 @@ jobs:
         sudo apt update
         sudo apt install -y abootimg android-sdk-libsparse-utils mkbootimg unzip
 
-    - name: Build halium-boot.img
+   - name: Build halium-boot.img
       run: |
         mkdir halium
         cp boot.img halium/
@@ -28,11 +28,8 @@ jobs:
         # Dummy logic - replace with actual halium-boot build if source available
         dd if=/dev/zero of=output/halium-boot-lava.img bs=1M count=32
 
-    - name: Download images
-      run: |
-        mkdir halium
-        cd halium
-        wget -O halium/vendor.img "https://drive.google.com/file/d/18xOuo6Ez3agdVbY59Ilq5TLtJSaBbgoP/view?usp=drive_link"
-        wget -O halium/boot.img "https://drive.google.com/file/d/1AHb1yBO5nzoXDKzOOGje9n01GjsGvfpb/view?usp=drive_link"
-        wget -O halium/dtbo.img "https://drive.google.com/file/d/1fxR-TRPX2LzzxjQ_nYoxSdQ2O0LemFmf/view?usp=drive_link"
-        wget -O halium/vbmeta.img "https://drive.google.com/file/d/1pVuEf35Rjcwz6jydP5-LMIH1OVwnBav9/view?usp=drive_link"
+    - name: Upload boot image
+      uses: actions/upload-artifact@v3
+      with:
+        name: halium-boot-lava
+        path: halium/output/halium-boot-lava.img
