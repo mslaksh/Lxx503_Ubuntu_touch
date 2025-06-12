@@ -13,7 +13,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y abootimg android-tools-fsutils mkbootimg unzip
+        sudo apt install -y abootimg android-sdk-libsparse-utils mkbootimg unzip
 
     - name: Build halium-boot.img
       run: |
