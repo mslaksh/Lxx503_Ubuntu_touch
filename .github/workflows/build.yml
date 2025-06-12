@@ -1,0 +1,38 @@
+name: Build Halium Boot for Lava Blaze
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y abootimg android-tools-fsutils mkbootimg unzip
+
+    - name: Build halium-boot.img
+      run: |
+        mkdir halium
+        cp boot.img halium/
+        cp vendor.img halium/
+        cp dtbo.img halium/
+        cp vbmeta.img halium/
+        cd halium
+        mkdir output
+
+        # Dummy logic - replace with actual halium-boot build if source available
+        dd if=/dev/zero of=output/halium-boot-lava.img bs=1M count=32
+
+    - name: Download images
+      run: |
+        mkdir halium
+        cd halium
+        wget -O vendor.img "https://drive.google.com/file/d/18xOuo6Ez3agdVbY59Ilq5TLtJSaBbgoP/view?usp=drive_link"
+        wget -O boot.img "https://drive.google.com/file/d/1AHb1yBO5nzoXDKzOOGje9n01GjsGvfpb/view?usp=drive_link"
+        wget -O dtbo.img "https://drive.google.com/file/d/1fxR-TRPX2LzzxjQ_nYoxSdQ2O0LemFmf/view?usp=drive_link"
+        wget -O vbmeta.img "https://drive.google.com/file/d/1pVuEf35Rjcwz6jydP5-LMIH1OVwnBav9/view?usp=drive_link"
