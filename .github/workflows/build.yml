@@ -32,7 +32,7 @@ jobs:
       run: |
         mkdir halium
         cd halium
-        wget -O vendor.img "https://drive.google.com/file/d/18xOuo6Ez3agdVbY59Ilq5TLtJSaBbgoP/view?usp=drive_link"
-        wget -O boot.img "https://drive.google.com/file/d/1AHb1yBO5nzoXDKzOOGje9n01GjsGvfpb/view?usp=drive_link"
-        wget -O dtbo.img "https://drive.google.com/file/d/1fxR-TRPX2LzzxjQ_nYoxSdQ2O0LemFmf/view?usp=drive_link"
-        wget -O vbmeta.img "https://drive.google.com/file/d/1pVuEf35Rjcwz6jydP5-LMIH1OVwnBav9/view?usp=drive_link"
+        wget -O halium/vendor.img "https://drive.google.com/file/d/18xOuo6Ez3agdVbY59Ilq5TLtJSaBbgoP/view?usp=drive_link"
+        wget -O halium/boot.img "https://drive.google.com/file/d/1AHb1yBO5nzoXDKzOOGje9n01GjsGvfpb/view?usp=drive_link"
+        wget -O halium/dtbo.img "https://drive.google.com/file/d/1fxR-TRPX2LzzxjQ_nYoxSdQ2O0LemFmf/view?usp=drive_link"
+        wget -O halium/vbmeta.img "https://drive.google.com/file/d/1pVuEf35Rjcwz6jydP5-LMIH1OVwnBav9/view?usp=drive_link"
