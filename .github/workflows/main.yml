@@ -9,24 +9,31 @@ jobs:
     timeout-minutes: 360
 
     steps:
-    - name: Checkout this repo
+    - name: Checkout CI repo
       uses: actions/checkout@v3
 
-    - name: Install dependencies
+    - name: Install build dependencies
       run: |
         sudo apt update
         sudo apt install -y git-core gnupg flex bison build-essential zip curl \
           zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
-          libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils \
-          xsltproc unzip openjdk-17-jdk python-is-python3 simg2img jq lz4
+          libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc \
+          unzip openjdk-17-jdk python-is-python3 simg2img jq lz4
+
+    - name: Install repo tool
+      run: |
+        mkdir -p ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        echo "PATH=$HOME/bin:$PATH" >> $GITHUB_ENV
 
     - name: Initialize LineageOS source
       run: |
         mkdir lineage && cd lineage
-        repo init -u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs
-        repo sync
+        repo init -u https://github.com/LineageOS/android.git -b lineage-22.2 --depth=1
+        repo sync -j$(nproc) --no-clone-bundle --no-tags --force-sync
 
-    - name: Clone local sources
+    - name: Clone device, vendor, and kernel trees
       run: |
         cd lineage
         git clone https://github.com/mslaksh/LXX503 device/lava/lxx503
@@ -41,8 +48,8 @@ jobs:
         lunch lineage_lxx503-userdebug
         mka bacon -j$(nproc)
 
-    - name: Upload ROM output
+    - name: Upload ROM zip
       uses: actions/upload-artifact@v4
       with:
-        name: lineage22-lxx503
+        name: lineage22-lava-lxx503
         path: lineage/out/target/product/lxx503/*.zip
