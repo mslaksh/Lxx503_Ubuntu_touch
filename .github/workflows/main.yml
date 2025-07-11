@@ -1,0 +1,48 @@
+name: Build LineageOS 22 for Lava Blaze 5G (lxx503)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
+
+    steps:
+    - name: Checkout this repo
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git-core gnupg flex bison build-essential zip curl \
+          zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
+          libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils \
+          xsltproc unzip openjdk-17-jdk python-is-python3 simg2img jq lz4
+
+    - name: Initialize LineageOS source
+      run: |
+        mkdir lineage && cd lineage
+        repo init -u https://github.com/LineageOS/android.git -b lineage-22.0 --depth=1
+        repo sync -j$(nproc) --no-clone-bundle --no-tags --force-sync
+
+    - name: Clone local sources
+      run: |
+        cd lineage
+        git clone https://github.com/mslaksh/LXX503 device/lava/lxx503
+        git clone https://github.com/mslaksh/android_kernel_lava_LXX503 kernel/lava/LXX503
+        git clone https://github.com/mslaksh/lava_lxx503_dump -b LXX503-user-12-SP1A.210812.016-1669458002-release-keys vendor_tmp
+        mkdir -p vendor/lava/lxx503 && cp -r vendor_tmp/vendor/* vendor/lava/lxx503/
+
+    - name: Start the build
+      run: |
+        cd lineage
+        source build/envsetup.sh
+        lunch lineage_lxx503-userdebug
+        mka bacon -j$(nproc)
+
+    - name: Upload ROM output
+      uses: actions/upload-artifact@v4
+      with:
+        name: lineage22-lxx503
+        path: lineage/out/target/product/lxx503/*.zip
