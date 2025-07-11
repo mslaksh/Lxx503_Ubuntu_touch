@@ -23,8 +23,8 @@ jobs:
     - name: Initialize LineageOS source
       run: |
         mkdir lineage && cd lineage
-        repo init -u https://github.com/LineageOS/android.git -b lineage-22.0 --depth=1
-        repo sync -j$(nproc) --no-clone-bundle --no-tags --force-sync
+        repo init -u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs
+        repo sync
 
     - name: Clone local sources
       run: |
